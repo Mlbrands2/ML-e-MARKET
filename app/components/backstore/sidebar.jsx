@@ -3,9 +3,9 @@ import React from 'react';
 
 export default function sidebar(){
   return (
-    <div className='bg-slate-800'>
+    <div className='bg-slate-800 space-y-6 w-52'>
       <link href='#'>logo</link>
-      <div className=''>
+      <div className='space-y-3'>
       <link href='#'>dashboard</link>
       <link href='#'>catalogue</link>
       <link href='#'>customers</link>
