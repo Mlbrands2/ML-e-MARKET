@@ -3,9 +3,7 @@ import React from 'react';
 export default function page(){
   return (
     <div>
-      Dashboard
+      <h2>attributes</h2>
     </div>
   );
 };
-
-
