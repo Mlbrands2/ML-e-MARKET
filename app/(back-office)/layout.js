@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; 
 import Sidebar from '@/components/backstore/Sidebar';
 import Navbar from '@/components/backstore/Navbar';
 
@@ -14,10 +14,8 @@ export default function Layout({ children }) {
         <Navbar />
 
         {/* Main Content */}
-        <main className="flex-1 mt-16 p-6 bg-gradient-to-r from-gray-100 to-gray-200 overflow-auto">
-          <div className="text-lg text-gray-800">
-            {children || "This is the main content area. Add your content here!"}
-          </div>
+        <main className="mt-16 ml-4 p-8 bg-slate-900 text-slate-500 overflow-auto min-h-screen">
+          {children}
         </main>
       </div>
     </div>
