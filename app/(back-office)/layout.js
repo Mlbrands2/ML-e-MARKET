@@ -1,19 +1,21 @@
 import React from 'react';
+import Sidebar from '@/components/backstore/Sidebar'; // Or use relative path if necessary
+import Navbar from '@/components/backstore/Navbar'; // Make sure Navbar is also correctly imported
 
-export default function layout({children}){
+export default function Layout({ children }) {
   return (
-    <div className='flex'>
-      {/*sidebar*/}
-      <sidebar />
-      <div className='w-full'>
-    {/*header*/}
-    <h2>Nav bar</h2>
-    <main>
-        {children}
-    </main>
-    {/*main*/}
+    <div className="flex">
+      {/* Sidebar */}
+      <Sidebar />
+      
+      <div className="w-full">
+        {/* Navbar */}
+        <Navbar />
+        
+        <main>
+          {children}
+        </main>
       </div>
-      {/*main body*/}
     </div>
   );
-};
+}
