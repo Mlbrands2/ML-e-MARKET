@@ -3,6 +3,7 @@ import Heading from '@/components/backstore/Heading';
 import LargeCards from '@/components/backstore/LargeCards';
 import SmallCards from '@/components/backstore/SmallCards';
 import DashboardCharts from '@/components/backstore/DashboardCharts';
+import CustomDataTable from '@/components/backstore/CustomDataTable';
 
 export default function Page(){
   return (
@@ -15,6 +16,7 @@ export default function Page(){
     {/* charts */}
     <DashboardCharts/>
     {/* recent order table*/}
+    <CustomDataTable/>
     </div>
   );
 };
