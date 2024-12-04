@@ -19,6 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ThemeSwitcherBtn } from "../ui/ThemeSwitcherBtn";
 
 export default function Navbar() {
   return (
@@ -34,7 +35,7 @@ export default function Navbar() {
         <button className="text-slate-400 hover:text-yellow-500 transition duration-300">
           <Sun size={20} className="text-green-600" />
         </button>
-
+        <ThemeSwitcherBtn/>
         {/* Notifications */}
         <DropdownMenu>
           <DropdownMenuTrigger>
