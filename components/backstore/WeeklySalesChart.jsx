@@ -11,50 +11,54 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import * as faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 
 export default function WeeklySalesChart() {
   ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
-const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top',
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+  );
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Line Chart',
+      },
     },
-    title: {
-      display: true,
-      text: 'Chart.js Line Chart',
-    },
-  },
-};
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-const data = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
-      borderColor: 'rgb(255, 99, 132)',
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    },
-    {
-      label: 'Dataset 2',
-      data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
-      borderColor: 'rgb(53, 162, 235)',
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
-    },
-  ],
-};
- 
-const tabs = [
+  };
+
+  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+  const data = {
+    labels,
+    datasets: [
+     {
+        label: 'Sales',
+        data: labels.map(() => faker.number.int({ min: -1000, max: 1000 })), // Fixed usage of faker.number.int()
+        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+     {/*} {
+        label: 'Dataset 2',
+        data: labels.map(() => faker.number.int({ min: -1000, max: 1000 })), // Fixed usage of faker.number.int()
+        borderColor: 'rgb(53, 162, 235)',
+        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+      },
+    */}
+    ],
+  };
+
+  const tabs = [
     {
       title: "Sales",
       type: "sales",
@@ -78,10 +82,9 @@ const tabs = [
               <li className="mr-2" key={i}>
                 <button
                   onClick={() => setChartToDisplay(tab.type)}
-                  className={
-                    chartToDisplay === tab.type
-                      ? "inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
-                      : "inline-block p-4 text-gray-500 hover:text-blue-600 hover:border-blue-600 border-b-2 border-transparent rounded-t-lg dark:text-gray-400 dark:hover:text-blue-500"
+                  className={chartToDisplay === tab.type
+                    ? "inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
+                    : "inline-block p-4 text-gray-500 hover:text-blue-600 hover:border-blue-600 border-b-2 border-transparent rounded-t-lg dark:text-gray-400 dark:hover:text-blue-500"
                   }
                 >
                   {tab.title}
@@ -94,7 +97,7 @@ const tabs = [
         {/* Content to Display */}
         {tabs.map((tab, i) => {
           if (chartToDisplay === tab.type) {
-            return <Line options={options} data={data} />; // Added the return statement and key
+            return <Line key={i} options={options} data={data} />;
           }
           return null; // Return null for non-matching tabs
         })}
