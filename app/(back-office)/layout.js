@@ -14,7 +14,7 @@ export default function Layout({ children }) {
         <Navbar />
 
         {/* Main Content */}
-        <main className="mt-16 ml-4 p-8 bg-slate-900 text-slate-500 overflow-auto min-h-screen">
+        <main className="mt-16 ml-4 p-8 bg-slate-50 dark:bg-slate-900 text-slate-50 ">
           {children}
         </main>
       </div>
