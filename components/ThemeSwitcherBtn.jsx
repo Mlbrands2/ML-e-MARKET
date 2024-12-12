@@ -5,7 +5,7 @@ import { Moon, MoonIcon, Sun, SunIcon } from "lucide-react";
 import {useTheme} from "next-themes";
 import { useEffect, useState } from "react";
 
-export function ThemeSwitcherBtn() {
+export default function ThemeSwitcherBtn() {
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
 console.log(theme)
