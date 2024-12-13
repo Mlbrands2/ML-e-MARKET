@@ -65,12 +65,12 @@ export default function Sidebar({ showSidebar, setShowSidebar }) {
         {
             title: "our staff",
             icon: Briefcase,
-            href: "/dashboard/our-staff", // Ensure this path is correct
+            href: "/dashboard/staff", // Ensure this path is correct
         },
         {
             title: "online store",
             icon: Globe,
-            href: "/dashboard/0nline store",
+            href: "/dashboard/OnlineStore",
         },
         {
             title: "Wallets",
@@ -78,14 +78,14 @@ export default function Sidebar({ showSidebar, setShowSidebar }) {
             href: "/dashboard/wallet",
         },
         {
-            title: "Mansour Community",
+            title: "ML Community",
             icon: MessageCircle,
-            href: "/dashboard/mansour-community",
+            href: "/dashboard/MLcommunity",
         },
         {
             title: "Settings",
             icon: Settings,
-            href: "/dashboard/setting",
+            href: "/dashboard/settings",
         },
     ];
     const [openMenu, setOpenMenu] = useState(false)
