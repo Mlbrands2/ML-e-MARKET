@@ -90,8 +90,8 @@ export default function Sidebar({ showSidebar, setShowSidebar }) {
     ];
     const [openMenu, setOpenMenu] = useState(false)
     return (
-        <div className={showSidebar ? " lg:onClick={()=>setShowSidebar(false)}  hidden sm:mt-20 md:mt-20 lg:mt-0 dark:bg-slate-700 overflow-y-scroll bg-slate-200 space-y-6 w-64 h-screen dark:text-slate-50 text-slate-900  fixed top-0 left-0" :
-            " sm:block lg:mt-0 overflow-y-scroll md:mt-20 sm:mt-20 dark:bg-slate-700 bg-slate-200 space-y-6 w-64 h-screen dark:text-slate-50 text-slate-900  fixed top-0 left-0"
+        <div className={showSidebar ? " lg:onClick={()=>setShowSidebar(false)}  hidden sm:mt-20 md:mt-20 lg:mt-0 dark:bg-slate-700 overflow-y-scroll bg-slate-200 space-y-6 w-64 h-screen dark:text-slate-50 text-slate-900  fixed top-0 left-0 overflow-y-scroll" :
+            " sm:block lg:mt-0 overflow-y-scroll md:mt-20 sm:mt-20 dark:bg-slate-700 bg-slate-200 space-y-6 w-64 h-screen dark:text-slate-50 text-slate-900  fixed top-0 left-0 overflow-y-scroll"
         }>
             <Link onClick={() => setShowSidebar(true)} className='px-6 py-4' href="/dashboard"><Image src={logo} alt="mansour" className='w-40' /></Link>
 
