@@ -12,7 +12,7 @@ export default function page() {
 
       {/* Table Action Section */}
       <TableActions/>
-     <div className="py-8">
+     <div className="py-8 text-black dark:text-white">
      <h2>Table</h2>
      </div>
      </div>

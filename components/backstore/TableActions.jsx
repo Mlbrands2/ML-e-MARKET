@@ -3,7 +3,7 @@ import React from 'react';
 
 export default function TableActions(){
   return (
-    <div className="flex justify-between py-6 px-12 mt-12 bg-slate-700 rounded-lg items-center gap-8">
+    <div className="flex justify-between py-6 px-12 mt-12 bg-slate-200 shadow dark:bg-slate-700 rounded-lg items-center gap-8">
         {/* Export Button */}
         <button className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
           <span className="relative flex items-center gap-2 px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
@@ -28,7 +28,7 @@ export default function TableActions(){
         </div>
 
         {/* Delete Button */}
-        <button className="space-x-2 flex items-center justify-center text-bg-slate-100 hover:text-red-700">
+        <button className="space-x-2 flex items-center justify-center dark:text-white text-black hover:text-red-700 dark:hover:text-red-700">
           <Trash2 className="w-5 h-5" />
           <span>Bulk Delete</span>
         </button>
