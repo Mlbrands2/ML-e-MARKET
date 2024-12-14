@@ -1,5 +1,5 @@
 "use client"
-import React from 'react';
+import React, { useState } from 'react';
 import { X } from "lucide-react";
 import FormHeader from '@/components/backstore/FormHeader';
 import TextInput from '@/components/Forminputs/Textinputs';
@@ -9,8 +9,10 @@ import {useForm} from "react-hook-form"
 import SubmitButton from '@/components/Forminputs/SubmitButton';
 import TextareaInput from '@/components/Forminputs/TextareaInput';
 import { generateSlug } from '@/lib/generateSlug';
+import ImageInput from '@/components/Forminputs/imageinput';
 
 export default function NewCategory() {
+  const [imageUrl,setImageUrl]=useState("")
   const {register,handleSubmit,formState:{errors}}=useForm();
   async function onSubmit(data) {
     const slug=generateSlug(data.title)
@@ -33,8 +35,9 @@ export default function NewCategory() {
           name="description"
           register={register}
           errors={errors}/>
+          <ImageInput label="category image"/>
       </div>
-      <SubmitButton isLoading={false} buttonTitle="Create Category" loadingButtonTittle="Creating Category please wait.."/>
+      <SubmitButton imageUrl={imageUrl} setImageUrl={setImageUrl} endpoint="categoryimageUploader" isLoading={false} buttonTitle="Create Category" loadingButtonTittle="Creating Category please wait.."/>
     </form>
       {/* Additional Fields */}
       {/*
