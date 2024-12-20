@@ -21,20 +21,20 @@ export default function NewCategory() {
   } = useForm();
 
   // Function to handle form submission
-  async function onSubmit(data) {
+  async function onSubmit(data) 
+   { 
+    
     const slug = generateSlug(data.title); // Generate slug
     data.slug = slug;
     data.image = imageUrl; // Attach the image URL to form data
-
-    // Log data to the terminal
-    console.log("Form data submitted:", data);
-
-    // Call makePostRequest
-    await makePostRequest(
+        // Log data to the terminal
+    console.log(data);
+    // Call makePostRe quest
+    makePostRequest(
       setLoading, // Function to manage loading state
       "api/categories", // API endpoint
       data, // Form data
-      "categories", // Redirect path or purpose
+      "Categories", // Redirect path or purpose
       reset // Function to reset the form
     );
   }
