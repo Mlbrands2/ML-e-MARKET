@@ -5,17 +5,15 @@ import TextInput from "@/components/Forminputs/Textinputs";
 import { makePostRequest } from "@/lib/apiRequest"; // Adjust the path as needed.
 import { useForm } from "react-hook-form";
 import SubmitButton from "@/components/Forminputs/SubmitButton";
-import TextareaInput from "@/components/Forminputs/TextareaInput";
-import { generateSlug } from "@/lib/generateSlug";
 import ImageInput from "@/components/Forminputs/imageinput";
 
-export default function NewCategories() {
-  const[imageUrl,setImageUrl]=useState("");
+export default function NewBanners() {
+  const [imageUrl, setImageUrl] = useState(""); // Manage banner image URL
   const [loading, setLoading] = useState(false); // Manage loading state
 
   const {
     register,
-    reset, 
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm();
@@ -24,62 +22,66 @@ export default function NewCategories() {
   async function onSubmit(data) {
     try {
       setLoading(true); // Set loading to true
-      const slug = generateSlug(data.title); // Generate slug
-      data.slug = slug;
       data.image = imageUrl; // Attach the image URL to form data
-      
+
       console.log("Form Data:", data); // Debug form data
 
       // Call makePostRequest
       await makePostRequest(
         setLoading, // Function to manage loading state
-        "api/categories", // API endpoint
+        "api/banners", // API endpoint
         data, // Form data
-        "Categories", // Redirect path or purpose
+        "Banner Created", // Success message
         reset // Function to reset the form
       );
 
       // Reset imageUrl after successful request
       setImageUrl("");
     } catch (error) {
-      console.error("Error submitting category:", error);
+      console.error("Error submitting banner:", error);
     } finally {
       setLoading(false); // Ensure loading is set to false after completion
     }
   }
 
   return (
-    <div>
+    <div className="p-4 bg-gray-50 dark:bg-gray-900 min-h-screen">
       {/* Header Section */}
-      <FormHeader title="New Category" />
+      <FormHeader
+        title="New Banner"
+        className="text-gray-900 dark:text-gray-100 text-2xl font-bold mb-6"
+      />
       <form
         onSubmit={handleSubmit(onSubmit)} // Handle form submission
-        className="w-full max-w-5xl bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700 mx-auto my-3"
+        className="w-full max-w-5xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow sm:p-6 md:p-8 mx-auto"
       >
         <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
           <TextInput
-            label="Category Title"
+            label="Banner Title"
             name="title"
             register={register}
             errors={errors}
+            className="text-gray-900 dark:text-white"
           />
-          <TextareaInput
-            label="Category Description"
-            name="description"
+          <TextInput
+            label="Banner Link"
+            name="link"
+            type="url"
             register={register}
             errors={errors}
+            className="text-gray-900 dark:text-white"
           />
           <ImageInput
-            label="Category Image"
+            label="Banner Image"
             imageUrl={imageUrl}
             setImageUrl={setImageUrl}
-            endpoint="categoryImageUploader"
+            endpoint="bannerImageUploader" // API endpoint for uploading banner images
           />
         </div>
         <SubmitButton
-          isLoading={false} // Bind to loading state
-          buttonTitle="Create Category"
-          loadingButtonTittle="Creating Category, please wait..."
+          isLoading={loading} // Bind to loading state
+          buttonTitle="Create Banner"
+          loadingButtonTittle="Creating Banner, please wait..."
         />
       </form>
     </div>

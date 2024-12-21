@@ -3,22 +3,19 @@ import { UploadThingError } from "uploadthing/server";
 
 const f = createUploadthing();
 
-const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
+const auth = async (req: Request) => {
+  // Fake auth function for example purposes
+  return { id: "fakeId" }; // Replace with real authentication logic
+};
 
 // FileRouter for your app, can contain multiple FileRoutes
-export const ourFileRouter = {
-  // Define as many FileRoutes as you like, each with a unique routeSlug
+export const ourFileRouter: FileRouter = {
   categoryImageUploader: f({
     image: {
-      /**
-       * For full list of options and defaults, see the File Route API reference
-       * @see https://docs.uploadthing.com/file-routes#route-config
-       */
       maxFileSize: "1MB",
       maxFileCount: 1,
     },
   })
-    // Set permissions and file types for this FileRoute
     .middleware(async ({ req }) => {
       // This code runs on your server before upload
       const user = await auth(req);
@@ -32,12 +29,30 @@ export const ourFileRouter = {
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
       console.log("Upload complete for userId:", metadata.userId);
-
-      console.log("file url", file.url);
+      console.log("File URL:", file.url);
 
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       return { uploadedBy: metadata.userId };
     }),
-} satisfies FileRouter;
+
+  bannerImageUploader: f({
+    image: {
+      maxFileSize: "1MB", // Adjust file size limit for banners if needed
+      maxFileCount: 1,
+    },
+  })
+    .middleware(async ({ req }) => {
+      // Authentication logic
+      const user = await auth(req);
+
+      if (!user) throw new UploadThingError("Unauthorized");
+      return { userId: user.id };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Banner upload complete for userId:", metadata.userId);
+      console.log("File URL:", file.url);
+      return { uploadedBy: metadata.userId };
+    }),
+};
 
 export type OurFileRouter = typeof ourFileRouter;
