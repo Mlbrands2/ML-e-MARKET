@@ -49,7 +49,7 @@ export default function NewBanners() {
       {/* Header Section */}
       <FormHeader
         title="New Banner"
-        className="text-gray-900 dark:text-gray-100 text-2xl font-bold mb-6"
+        className="text-gray-900 dark:text-gray-100 text-2xl font-bold mb-8" // Adjusted margin-bottom for more space
       />
       <form
         onSubmit={handleSubmit(onSubmit)} // Handle form submission
