@@ -5,41 +5,17 @@ import TextInput from "@/components/Forminputs/Textinputs";
 import { makePostRequest } from "@/lib/apiRequest"; // Adjust the path as needed.
 import { useForm } from "react-hook-form";
 import SubmitButton from "@/components/Forminputs/SubmitButton";
+import ImageInput from "@/components/Forminputs/imageinput";
 import TextareaInput from "@/components/Forminputs/TextareaInput";
 import { generateSlug } from "@/lib/generateSlug";
-import ImageInput from "@/components/Forminputs/imageinput";
-import SelectInput from "@/components/Forminputs/Selectinputs";
-import { title } from "process";
 
-export default function NewCategories() {
-  const[imageUrl,setImageUrl]=useState("");
-  const markets=[{
-    id:1,
-    title:"dsm market"
-  },
-  {
-    id:2,
-    title:"arusha market"
-  },
-  {
-    id:3,
-    title:"iringa market"
-  },
-  {
-    id:4,
-    title:"mwanza market"
-  },
-  {
-    id:5,
-    title:"songea market"
-  } 
-
-]
+export default function NewMarkets() {
+  const [imageUrl, setImageUrl] = useState(""); // Manage market logo URL
   const [loading, setLoading] = useState(false); // Manage loading state
 
   const {
     register,
-    reset, 
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm();
@@ -48,71 +24,67 @@ export default function NewCategories() {
   async function onSubmit(data) {
     try {
       setLoading(true); // Set loading to true
-      const slug = generateSlug(data.title); // Generate slug
+      data.logo = imageUrl; // Attach the logo URL to form data
+
+      // Generate slug from the title
+      const slug = generateSlug(data.title);
       data.slug = slug;
-      data.image = imageUrl; // Attach the image URL to form data
-      
+
       console.log("Form Data:", data); // Debug form data
 
       // Call makePostRequest
       await makePostRequest(
         setLoading, // Function to manage loading state
-        "api/categories", // API endpoint
+        "api/markets", // API endpoint
         data, // Form data
-        "Categories", // Redirect path or purpose
+        "Market Created", // Success message
         reset // Function to reset the form
       );
 
       // Reset imageUrl after successful request
       setImageUrl("");
     } catch (error) {
-      console.error("Error submitting category:", error);
+      console.error("Error submitting market:", error);
     } finally {
       setLoading(false); // Ensure loading is set to false after completion
     }
   }
 
   return (
-    <div>
+    <div className="p-4 bg-gray-50 dark:bg-gray-900 min-h-screen">
       {/* Header Section */}
-      <FormHeader title="New Category" />
+      <FormHeader
+        title="New Market"
+        className="text-gray-900 dark:text-gray-100 text-2xl font-bold mb-8" // Adjusted margin-bottom for more space
+      />
       <form
         onSubmit={handleSubmit(onSubmit)} // Handle form submission
         className="w-full max-w-5xl bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700 mx-auto my-3"
       >
         <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
           <TextInput
-            label="Category Title"
+            label="Market Title"
             name="title"
-            register={register}
-            errors={errors}
-            className="w-full"
-          />
-            <SelectInput
-            label="Select Market"
-            name="marketID"
-            register={register}
-            errors={errors}
-            className="w-full"
-            options={markets}
-          />
-          <TextareaInput
-            label="Category Description"
-            name="description"
             register={register}
             errors={errors}
           />
           <ImageInput
-            label="Category Image"
+            label="Market Logo"
             imageUrl={imageUrl}
             setImageUrl={setImageUrl}
-            endpoint="categoryImageUploader"
+            endpoint="marketLogoUploader" // API endpoint for uploading market logos
+          />
+          <TextareaInput
+            label="Market Description"
+            name="description"
+            register={register}
+            errors={errors}
           />
         </div>
         <SubmitButton
           isLoading={false} // Bind to loading state
-          buttonTitle="Create Category"
-          loadingButtonTittle="Creating Category, please wait..."
+          buttonTitle="Create Market"
+          loadingButtonTittle="Creating Market, please wait..."
         />
       </form>
     </div>

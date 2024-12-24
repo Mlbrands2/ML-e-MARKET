@@ -1,9 +1,20 @@
+import Heading from '@/components/backstore/Heading';
+import PageHeader from '@/components/backstore/PageHeader';
+import TableActions from '@/components/backstore/TableActions';
+import Link from 'next/link';
 import React from 'react';
 
-export default function page(){
+export default function page() {
   return (
     <div>
-      <h2>products</h2>
-    </div>
+      {/* Header */}
+      <PageHeader heading="Products" href="/dashboard/products/new" linkTitle="Add products" />
+
+      {/* Table Action Section */}
+      <TableActions/>
+     <div className="py-8 text-black dark:text-white">
+     <h2>Table</h2>
+     </div>
+     </div>
   );
-};
+}
