@@ -8,6 +8,7 @@ import SubmitButton from "@/components/Forminputs/SubmitButton";
 import ImageInput from "@/components/Forminputs/imageinput";
 import TextareaInput from "@/components/Forminputs/TextareaInput";
 import { generateSlug } from "@/lib/generateSlug";
+import ToggleInput from "@/components/Forminputs/ToggleInput";
 
 export default function NewMarkets() {
   const [imageUrl, setImageUrl] = useState(""); // Manage market logo URL
@@ -16,10 +17,15 @@ export default function NewMarkets() {
   const {
     register,
     reset,
+    watch,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      isActive: true,
+    },});
 
+    const isActive = watch("isActive");
   // Function to handle form submission
   async function onSubmit(data) {
     try {
@@ -79,6 +85,13 @@ export default function NewMarkets() {
             name="description"
             register={register}
             errors={errors}
+          />
+          <ToggleInput
+            label="Market status"
+            name="isActive"
+            trueTitle="Active"
+            falseTitle="Draft"
+            register={register}
           />
         </div>
         <SubmitButton

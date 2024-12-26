@@ -9,8 +9,8 @@ import TextareaInput from "@/components/Forminputs/TextareaInput";
 import { generateSlug } from "@/lib/generateSlug";
 import ImageInput from "@/components/Forminputs/imageinput";
 import SelectInput from "@/components/Forminputs/Selectinputs";
-import { Plus } from "lucide-react";
 import ArrayItemsInput from "@/components/Forminputs/ArrayItemsInput";
+import ToggleInput from "@/components/Forminputs/ToggleInput";
 
 export default function NewProduct() {
   const [imageUrl, setImageUrl] = useState("");
@@ -30,9 +30,16 @@ export default function NewProduct() {
   const {
     register,
     reset,
+    watch,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      isActive: true,
+    },
+  });
+
+  const isActive = watch("isActive");
 
   async function onSubmit(data) {
     try {
@@ -40,7 +47,8 @@ export default function NewProduct() {
       const slug = generateSlug(data.title);
       data.slug = slug;
       data.image = imageUrl;
-      data.tags = tags; // Passing tags to the data object
+      data.tags = tags;
+      data.isActive = isActive; // Include active status in submission
 
       await makePostRequest(
         setLoading,
@@ -74,9 +82,18 @@ export default function NewProduct() {
           <SelectInput label="Select Category" name="categoryID" register={register} errors={errors} options={categories} />
           <SelectInput label="Select Farmer" name="farmerID" register={register} errors={errors} options={farmers} />
           <ImageInput label="Product Images" imageUrl={imageUrl} setImageUrl={setImageUrl} endpoint="productImageUploader" />
-          
+
           {/* Tags input component */}
           <ArrayItemsInput setItems={setTags} items={tags} />
+
+          {/* Toggle input component */}
+          <ToggleInput
+            label="Publish your Product"
+            name="isActive"
+            trueTitle="Active"
+            falseTitle="Draft"
+            register={register}
+          />
         </div>
         <SubmitButton
           isLoading={loading}

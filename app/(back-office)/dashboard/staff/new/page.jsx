@@ -7,10 +7,11 @@ import { useForm } from "react-hook-form";
 import SubmitButton from "@/components/Forminputs/SubmitButton";
 import TextareaInput from "@/components/Forminputs/TextareaInput";
 import ToggleInput from "@/components/Forminputs/ToggleInput";
+import ImageInput from "@/components/Forminputs/imageinput"; // Component for image upload
 
-export default function NewFarmer() {
+export default function NewStaff() {
   const [loading, setLoading] = useState(false); // Manage loading state
-  const [farmersUniqueCode, setFarmersUniqueCode] = useState(""); // Manage unique code state
+  const [staffUniqueCode, setStaffUniqueCode] = useState(""); // Manage unique code state
 
   const {
     register,
@@ -18,30 +19,29 @@ export default function NewFarmer() {
     reset,
     handleSubmit,
     formState: { errors },
-  } = useForm(
-    {
-      defaultValues: {
-        isActive: true,
-      },}
-  );
+  } = useForm({
+    defaultValues: {
+      isActive: true,
+    },
+  });
 
-  // Watch the farmer's name to generate the unique code
-  const farmerName = watch("name");
+  // Watch the staff's full name to generate the unique code
+  const staffFullName = watch("fullName");
   const isActive = watch("isActive");
 
-  // Generate a unique code whenever the farmer's name changes
+  // Generate a unique code whenever the staff's full name changes
   useEffect(() => {
-    if (farmerName) {
-      const initials = farmerName
+    if (staffFullName) {
+      const initials = staffFullName
         .split(" ")
         .map((word) => word.charAt(0).toUpperCase())
         .join("");
       const timestamp = Date.now();
-      setFarmersUniqueCode(`ML-${initials}-${timestamp}`);
+      setStaffUniqueCode(`ST-${initials}-${timestamp}`);
     } else {
-      setFarmersUniqueCode("");
+      setStaffUniqueCode("");
     }
-  }, [farmerName]);
+  }, [staffFullName]);
 
   // Handle form submission
   async function onSubmit(data) {
@@ -49,20 +49,20 @@ export default function NewFarmer() {
       setLoading(true); // Set loading to true
       const finalData = {
         ...data,
-        farmersUniqueCode, // Include the dynamically generated unique code
+        staffUniqueCode, // Include the dynamically generated unique code
       };
       console.log("Submitting Data:", finalData);
 
       // API request
       await makePostRequest(
         setLoading,
-        "api/farmers", // API endpoint for farmers
+        "api/staff", // API endpoint for staff
         finalData,
-        "Farmer Created",
+        "Staff Created",
         reset
       );
     } catch (error) {
-      console.error("Error submitting farmer:", error);
+      console.error("Error submitting staff:", error);
     } finally {
       setLoading(false); // Ensure loading is set to false after submission
     }
@@ -71,74 +71,67 @@ export default function NewFarmer() {
   return (
     <div>
       {/* Header Section */}
-      <FormHeader title="New Farmer" />
+      <FormHeader title="New Staff" />
       <form
         onSubmit={handleSubmit(onSubmit)} // Handle form submission
         className="w-full max-w-5xl bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700 mx-auto my-3"
       >
         <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
           <TextInput
-            label="Farmer's Name"
-            name="name"
+            label="Full Name"
+            name="fullName"
             register={register}
             errors={errors}
           />
           <TextInput
-            label="Farmer's Phone Number"
+            label="Phone Number"
             name="phone"
             type="tel"
             register={register}
             errors={errors}
           />
           <TextInput
-            label="Farmer's Email"
+            label="Email Address"
             name="email"
             type="email"
             register={register}
             errors={errors}
           />
           <TextInput
-            label="Farmer's Address"
+            label="Physical Address"
             name="address"
             register={register}
             errors={errors}
           />
+          <TextareaInput
+            label="Notes"
+            name="notes"
+            register={register}
+            errors={errors}
+          />
+          <ImageInput
+            label="Staff Image"
+            imageUrl={""} // Provide a default empty value for the image URL
+            setImageUrl={(url) => console.log("Uploaded image URL:", url)} // Handle the image URL
+            endpoint="staffImageUploader"
+          />
           <TextInput
-            label="Farmer's Contact Person"
-            name="contactPerson"
+            label="Password"
+            name="password"
+            type="password"
             register={register}
             errors={errors}
           />
           <TextInput
-            label="Farmer's Contact Person Phone"
-            name="contactPersonPhone"
-            type="tel"
-            register={register}
-            errors={errors}
-          />
-          <TextInput
-            label="Farmer's Unique Code"
-            name="farmersUniqueCode"
+            label="Unique Code"
+            name="staffUniqueCode"
             register={() => ({})} // No validation, as it's auto-generated
             errors={errors}
-            defaultValue={farmersUniqueCode}
-            className="w-full"
+            defaultValue={staffUniqueCode}
             readOnly // Make it read-only since it's auto-generated
           />
-          <TextareaInput
-            label="Farmer's Payment Terms"
-            name="paymentTerms"
-            register={register}
-            errors={errors}
-          />
-          <TextareaInput
-            label="Farmer's Note"
-            name="note"
-            register={register}
-            errors={errors}
-          />
-           <ToggleInput
-            label="Farmer's status"
+          <ToggleInput
+            label="Status"
             name="isActive"
             trueTitle="Active"
             falseTitle="Draft"
@@ -146,9 +139,9 @@ export default function NewFarmer() {
           />
         </div>
         <SubmitButton
-          isLoading={false} // Bind to loading state
-          buttonTitle="Create Farmer"
-          loadingButtonTittle="Creating Farmer, please wait..."
+          isLoading={loading} // Bind to loading state
+          buttonTitle="Create Staff"
+          loadingButtonTittle="Creating Staff, please wait..."
         />
       </form>
     </div>

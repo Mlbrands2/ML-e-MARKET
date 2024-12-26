@@ -8,7 +8,7 @@ export default function page() {
   return (
     <div>
       {/* Header */}
-      <PageHeader heading="Markerts" href="/dashboard/markets/new" linkTitle="Add Markets" />
+      <PageHeader heading="Market" href="/dashboard/markets/new" linkTitle="Add Markets" />
 
       {/* Table Action Section */}
       <TableActions/>

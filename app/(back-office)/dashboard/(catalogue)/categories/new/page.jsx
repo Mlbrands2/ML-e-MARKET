@@ -10,6 +10,7 @@ import { generateSlug } from "@/lib/generateSlug";
 import ImageInput from "@/components/Forminputs/imageinput";
 import SelectInput from "@/components/Forminputs/Selectinputs";
 import { title } from "process";
+import ToggleInput from "@/components/Forminputs/ToggleInput";
 
 export default function NewCategories() {
   const[imageUrl,setImageUrl]=useState("");
@@ -39,11 +40,16 @@ export default function NewCategories() {
 
   const {
     register,
-    reset, 
+    reset,
+    watch, 
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      isActive: true,
+    },});
 
+  const isActive = watch("isActive");
   // Function to handle form submission
   async function onSubmit(data) {
     try {
@@ -107,6 +113,13 @@ export default function NewCategories() {
             imageUrl={imageUrl}
             setImageUrl={setImageUrl}
             endpoint="categoryImageUploader"
+          />
+          <ToggleInput
+            label="Publish your Banner"
+            name="isActive"
+            trueTitle="Active"
+            falseTitle="Draft"
+            register={register}
           />
         </div>
         <SubmitButton

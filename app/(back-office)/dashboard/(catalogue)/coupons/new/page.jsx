@@ -5,6 +5,7 @@ import TextInput from "@/components/Forminputs/Textinputs";
 import { makePostRequest } from "@/lib/apiRequest"; // Adjust the path as needed.
 import { useForm } from "react-hook-form";
 import SubmitButton from "@/components/Forminputs/SubmitButton";
+import ToggleInput from "@/components/Forminputs/ToggleInput";
 
 // Utility function to generate a coupon code
 const generateCouponCode = (title, expiryDate) => {
@@ -24,12 +25,17 @@ export default function NewCoupons() {
     watch,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm(
+    {
+      defaultValues: {
+        isActive: true,
+      },}
+  );
 
   // Watch for form field changes
   const title = watch("title");
   const expiryDate = watch("expiryDate");
-
+  const isActive = watch("isActive");
   // Update coupon code dynamically
   useEffect(() => {
     setCouponCode(generateCouponCode(title, expiryDate));
@@ -91,6 +97,13 @@ export default function NewCoupons() {
             register={register}
             errors={errors}
             className="w-full"
+          />
+          <ToggleInput
+            label="Publish your coupon"
+            name="isActive"
+            trueTitle="Active"
+            falseTitle="Draft"
+            register={register}
           />
         </div>
         <SubmitButton

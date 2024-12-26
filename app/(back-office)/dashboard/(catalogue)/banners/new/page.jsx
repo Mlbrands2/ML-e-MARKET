@@ -6,18 +6,26 @@ import { makePostRequest } from "@/lib/apiRequest"; // Adjust the path as needed
 import { useForm } from "react-hook-form";
 import SubmitButton from "@/components/Forminputs/SubmitButton";
 import ImageInput from "@/components/Forminputs/imageinput";
+import ToggleInput from "@/components/Forminputs/ToggleInput";
 
 export default function NewBanners() {
   const [imageUrl, setImageUrl] = useState(""); // Manage banner image URL
   const [loading, setLoading] = useState(false); // Manage loading state
 
+
   const {
     register,
     reset,
+    watch,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      isActive: true,
+    },}
+  );
 
+  const isActive = watch("isActive");
   // Function to handle form submission
   async function onSubmit(data) {
     try {
@@ -76,6 +84,13 @@ export default function NewBanners() {
             imageUrl={imageUrl}
             setImageUrl={setImageUrl}
             endpoint="bannerImageUploader" // API endpoint for uploading banner images
+          />
+           <ToggleInput
+            label="Publish your Banner"
+            name="isActive"
+            trueTitle="Active"
+            falseTitle="Draft"
+            register={register}
           />
         </div>
         <SubmitButton
