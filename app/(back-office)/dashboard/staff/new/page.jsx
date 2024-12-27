@@ -8,6 +8,7 @@ import SubmitButton from "@/components/Forminputs/SubmitButton";
 import TextareaInput from "@/components/Forminputs/TextareaInput";
 import ToggleInput from "@/components/Forminputs/ToggleInput";
 import ImageInput from "@/components/Forminputs/imageinput"; // Component for image upload
+import RichTextInput from "@/components/Forminputs/RichTextInput"; // Corrected import for RichTextInput
 
 export default function NewStaff() {
   const [loading, setLoading] = useState(false); // Manage loading state
@@ -28,6 +29,7 @@ export default function NewStaff() {
   // Watch the staff's full name to generate the unique code
   const staffFullName = watch("fullName");
   const isActive = watch("isActive");
+  const [notes, setNotes] = useState("<p>Enter notes here...</p>"); // State for RichTextInput
 
   // Generate a unique code whenever the staff's full name changes
   useEffect(() => {
@@ -50,6 +52,7 @@ export default function NewStaff() {
       const finalData = {
         ...data,
         staffUniqueCode, // Include the dynamically generated unique code
+        notes, // Include the notes from RichTextInput
       };
       console.log("Submitting Data:", finalData);
 
@@ -103,10 +106,11 @@ export default function NewStaff() {
             register={register}
             errors={errors}
           />
-          <TextareaInput
+          <RichTextInput
             label="Notes"
             name="notes"
-            register={register}
+            value={notes}
+            setValue={setNotes}
             errors={errors}
           />
           <ImageInput
