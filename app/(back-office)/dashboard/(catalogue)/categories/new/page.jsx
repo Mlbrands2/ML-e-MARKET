@@ -115,7 +115,7 @@ export default function NewCategories() {
             endpoint="categoryImageUploader"
           />
           <ToggleInput
-            label="Publish your Banner"
+            label="Publish your category"
             name="isActive"
             trueTitle="Active"
             falseTitle="Draft"

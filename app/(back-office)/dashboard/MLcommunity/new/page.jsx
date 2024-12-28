@@ -9,24 +9,20 @@ import TextareaInput from "@/components/Forminputs/TextareaInput";
 import { generateSlug } from "@/lib/generateSlug";
 import ImageInput from "@/components/Forminputs/imageinput";
 import SelectInput from "@/components/Forminputs/Selectinputs";
-import RichTextInput from "@/components/Forminputs/RichTextInput"; // Component for rich text input
 import ToggleInput from "@/components/Forminputs/ToggleInput";
-import { title } from "process";
+import RichTextInput from "@/components/Forminputs/RichTextInput"; // Component for rich text input
 
 export default function NewTraining() {
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false); // Manage loading state
 
-  // Example options for category and expert selections
-  const categories = [
-    { id: 1, title: "Agriculture" },
-    { id: 2, title: "Business" },
-    { id: 3, title: "Technology" },
-  ];
-
-  const experts = [
-    { id: 1, title: "John Doe" },
-    { id: 2, title: "Jane Smith" },
+  // Example options for market selection
+  const markets = [
+    { id: 1, title: "DSM Market" },
+    { id: 2, title: "Arusha Market" },
+    { id: 3, title: "Iringa Market" },
+    { id: 4, title: "Mwanza Market" },
+    { id: 5, title: "Songea Market" },
   ];
 
   const {
@@ -47,19 +43,19 @@ export default function NewTraining() {
   async function onSubmit(data) {
     try {
       setLoading(true); // Set loading to true
-      const slug = generateSlug(data.title); // Generate slug
+      const slug = generateSlug(data.title); // Generate slug from the training title
       data.slug = slug;
       data.image = imageUrl; // Attach the image URL to form data
 
       console.log("Form Data:", data); // Debug form data
 
       // Call makePostRequest
-      await makePostRequest(
+      makePostRequest(
         setLoading, // Function to manage loading state
-        "api/community-training", // API endpoint
+        "api/training", // API endpoint for creating community training
         data, // Form data
         "Community Training Created", // Success message
-        reset // Function to reset the form
+        reset // Function to reset the form after submission
       );
 
       // Reset imageUrl after successful request
@@ -106,20 +102,12 @@ export default function NewTraining() {
             endpoint="trainingImageUploader"
           />
           <SelectInput
-            label="Select Expert"
-            name="expertID"
+            label="Select Market"
+            name="marketID"
             register={register}
             errors={errors}
             className="w-full"
-            options={experts}
-          />
-          <SelectInput
-            label="Select Category"
-            name="categoryID"
-            register={register}
-            errors={errors}
-            className="w-full"
-            options={categories}
+            options={markets}
           />
           <ToggleInput
             label="Training Status"

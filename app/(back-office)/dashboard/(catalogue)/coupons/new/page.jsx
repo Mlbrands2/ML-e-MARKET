@@ -1,68 +1,52 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import FormHeader from "@/components/backstore/FormHeader";
 import TextInput from "@/components/Forminputs/Textinputs";
 import { makePostRequest } from "@/lib/apiRequest"; // Adjust the path as needed.
 import { useForm } from "react-hook-form";
 import SubmitButton from "@/components/Forminputs/SubmitButton";
+import { generateSlug } from "@/lib/generateSlug";
+//import DateInput from "@/components/Forminputs/DateInput"; // Assuming you have a date input component
 import ToggleInput from "@/components/Forminputs/ToggleInput";
 
-// Utility function to generate a coupon code
-const generateCouponCode = (title, expiryDate) => {
-  if (!title || !expiryDate) return "";
-  const formattedTitle = title.replace(/\s+/g, "").toUpperCase(); // Remove spaces and convert to uppercase
-  const formattedDate = expiryDate.split("-").reverse().join(""); // Format date as DDMMYYYY
-  return `${formattedTitle}${formattedDate}`;
-};
-
-export default function NewCoupons() {
+export default function NewCoupon() {
   const [loading, setLoading] = useState(false); // Manage loading state
-  const [couponCode, setCouponCode] = useState(""); // State for coupon code
 
   const {
     register,
     reset,
-    watch,
+    watch, 
     handleSubmit,
     formState: { errors },
-  } = useForm(
-    {
-      defaultValues: {
-        isActive: true,
-      },}
-  );
+  } = useForm({
+    defaultValues: {
+      isActive: true,
+    },
+  });
 
-  // Watch for form field changes
-  const title = watch("title");
-  const expiryDate = watch("expiryDate");
   const isActive = watch("isActive");
-  // Update coupon code dynamically
-  useEffect(() => {
-    setCouponCode(generateCouponCode(title, expiryDate));
-  }, [title, expiryDate]);
 
-  // Handle form submission
+  // Function to handle form submission
   async function onSubmit(data) {
     try {
       setLoading(true); // Set loading to true
-      const finalData = {
-        ...data,
-        couponCode, // Include the dynamically generated coupon code
-      };
-      console.log("Submitting Data:", finalData);
+      const slug = generateSlug(data.title); // Generate slug for the coupon
+      data.slug = slug;
 
-      // API request (uncomment and configure as needed)
+      console.log("Form Data:", data); // Debug form data
+
+      // Call makePostRequest
       await makePostRequest(
-       setLoading,
-       "api/coupons",
-       data,
-      "Coupons Created",
-        reset
+        setLoading, // Function to manage loading state
+        "api/coupons", // API endpoint for coupons
+        data, // Form data
+        "Coupons", // Redirect path or purpose
+        reset // Function to reset the form
       );
     } catch (error) {
       console.error("Error submitting coupon:", error);
     } finally {
-      setLoading(false); // Ensure loading is set to false after submission
+      setLoading(false); // Ensure loading is set to false after completion
     }
   }
 
@@ -80,26 +64,25 @@ export default function NewCoupons() {
             name="title"
             register={register}
             errors={errors}
+            className="w-full"
           />
           <TextInput
             label="Coupon Code"
             name="couponCode"
-            register={() => ({})} // Prevent validation as it's generated dynamically
+            register={register}
             errors={errors}
-            defaultValue={couponCode} // Display dynamically generated coupon code
             className="w-full"
-            readOnly // Make it read-only since it’s auto-generated
           />
           <TextInput
-            label="Coupon Expiry Date"
+            label="Expiry Date"
             name="expiryDate"
             type="date"
             register={register}
             errors={errors}
             className="w-full"
           />
-          <ToggleInput
-            label="Publish your coupon"
+         <ToggleInput
+            label="Publish your category"
             name="isActive"
             trueTitle="Active"
             falseTitle="Draft"
@@ -109,7 +92,7 @@ export default function NewCoupons() {
         <SubmitButton
           isLoading={loading} // Bind to loading state
           buttonTitle="Create Coupon"
-          loadingButtonTittle="Creating Coupon, please wait..."
+          loadingButtonTitle="Creating Coupon, please wait..."
         />
       </form>
     </div>

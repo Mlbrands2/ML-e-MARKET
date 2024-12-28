@@ -1,68 +1,72 @@
+import db from "@/lib/db";
 import { NextResponse } from "next/server";
 
-let banners = []; // Mock in-memory data store. Replace with a database in production.
-
+// Handle POST request: Create a new banner
 export async function POST(request) {
   try {
-    const body = await request.json(); // Parse JSON from the request body.
+    // Parse and validate the request body
+    const { title, imageUrl, link, isActive } = await request.json();
 
-    // Validate the input data
-    const { title, link, imageUrl } = body;
-    if (!title || !link || !imageUrl) {
+    if (!title || !imageUrl || !link || typeof isActive !== "boolean") {
       return NextResponse.json(
-        { message: "All fields (title, link, imageUrl) are required." },
-        { status: 400 }
-      );
-    }
-
-    // Additional validation (optional but recommended)
-    const urlRegex = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i;
-    if (!urlRegex.test(link)) {
-      return NextResponse.json(
-        { message: "Invalid URL format for the link." },
-        { status: 400 }
-      );
-    }
-    if (!/\.(jpg|jpeg|png|gif)$/i.test(imageUrl)) {
-      return NextResponse.json(
-        { message: "Invalid image format. Accepted: jpg, jpeg, png, gif." },
+        {
+          message: "All fields are required, and isActive must be a boolean",
+        },
         { status: 400 }
       );
     }
 
     // Create a new banner
-    const newBanner = {
-      id: banners.length + 1, // Mock ID; replace with a database-generated ID.
-      title,
-      link,
-      imageUrl,
-    };
-
-    // Add the new banner to the in-memory store
-    banners.push(newBanner);
-
-    // Return a success response
-    return NextResponse.json({
-      message: "Banner created successfully!",
-      banner: newBanner,
+    const newBanner = await db.banner.create({
+      data: {
+        title,
+        imageUrl,
+        link,
+        isActive,
+      },
     });
-  } catch (error) {
-    console.error("Error in banner POST route:", error);
+
+    console.log("New banner created:", newBanner);
+
     return NextResponse.json(
-      { message: "Internal Server Error" },
+      {
+        data: newBanner,
+        message: "Banner created successfully",
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Error creating banner:", error.message);
+
+    return NextResponse.json(
+      {
+        message: "Failed to create banner",
+        error: error.message,
+      },
       { status: 500 }
     );
   }
 }
 
-export async function GET() {
+// Handle GET request: Retrieve all banners
+export async function GET(request) {
   try {
-    // Return the list of banners
-    return NextResponse.json({ banners });
+    // Fetch banners ordered by creation date (descending)
+    const banners = await db.banner.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return NextResponse.json(banners);
   } catch (error) {
-    console.error("Error in banners GET route:", error);
+    console.error("Error fetching banners:", error.message);
+
     return NextResponse.json(
-      { message: "Internal Server Error" },
+      {
+        message: "Failed to fetch banners",
+        error: error.message,
+      },
       { status: 500 }
     );
   }

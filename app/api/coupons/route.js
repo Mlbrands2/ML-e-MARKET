@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-let coupons = []; // Mock in-memory data store. Replace with a database in production.
+let coupons = []; // Mock in-memory data store for coupons.
 
 export async function POST(request) {
   try {
@@ -17,7 +17,7 @@ export async function POST(request) {
 
     // Create a new coupon
     const newCoupon = {
-      id: Date.now(), // Mock ID; replace with a database-generated ID.
+      id: Date.now(), // Mock ID; replace with a database-generated ID in production.
       title,
       couponCode,
       expiryDate,
@@ -27,7 +27,10 @@ export async function POST(request) {
     coupons.push(newCoupon);
 
     // Return a success response
-    return NextResponse.json({ message: "Coupon created successfully!", coupon: newCoupon });
+    return NextResponse.json({
+      message: "Coupon created successfully!",
+      coupon: newCoupon,
+    });
   } catch (error) {
     console.error("Error in coupons POST route:", error);
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });

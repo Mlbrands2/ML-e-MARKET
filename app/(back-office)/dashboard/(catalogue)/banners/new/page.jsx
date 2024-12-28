@@ -1,104 +1,111 @@
-"use client";
-import React, { useState } from "react";
-import FormHeader from "@/components/backstore/FormHeader";
-import TextInput from "@/components/Forminputs/Textinputs";
-import { makePostRequest } from "@/lib/apiRequest"; // Adjust the path as needed.
-import { useForm } from "react-hook-form";
-import SubmitButton from "@/components/Forminputs/SubmitButton";
-import ImageInput from "@/components/Forminputs/imageinput";
-import ToggleInput from "@/components/Forminputs/ToggleInput";
+"use client"
+import {generateSlug} from "@/lib/generateSlug"
+import {makePostRequest ,makePutRequest} from "@/lib/apiRequest"
+import { useRouter } from "next/navigation"
+import TextareaInput from "@/components/Forminputs/TextareaInput"
+import SubmitButton from "@/components/Forminputs/SubmitButton"
+import Textinputs from "@/components/Forminputs/Textinputs"
+import ToggleInput from "@/components/Forminputs/ToggleInput"
+import React ,{useState} from 'react'
+import ImageInput from "@/components/Forminputs/imageinput"
+import { useForm } from "react-hook-form"
 
-export default function NewBanners() {
-  const [imageUrl, setImageUrl] = useState(""); // Manage banner image URL
-  const [loading, setLoading] = useState(false); // Manage loading state
-
-
-  const {
-    register,
-    reset,
-    watch,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      isActive: true,
-    },}
-  );
-
-  const isActive = watch("isActive");
-  // Function to handle form submission
-  async function onSubmit(data) {
-    try {
-      setLoading(true); // Set loading to true
-      data.image = imageUrl; // Attach the image URL to form data
-
-      console.log("Form Data:", data); // Debug form data
-
-      // Call makePostRequest
-      await makePostRequest(
-        setLoading, // Function to manage loading state
-        "api/banners", // API endpoint
-        data, // Form data
-        "Banner Created", // Success message
-        reset // Function to reset the form
-      );
-
-      // Reset imageUrl after successful request
-      setImageUrl("");
-    } catch (error) {
-      console.error("Error submitting banner:", error);
-    } finally {
-      setLoading(false); // Ensure loading is set to false after completion
-    }
-  }
-
+export default function BannerForms({updateData={}}) {
+     const initialImageUrl=updateData?.imageUrl??""
+    const id= updateData?.id??""
+  const [imageUrl,setImageUrl]=useState(initialImageUrl)
+  const [loading, setLoading]=useState(false)
+  const {register,reset,watch,handleSubmit,formState:{errors}}=useForm({defaultValues:{
+    isActive:true,
+...updateData,
+},});
+    const isActive = watch("isActive");
+console.log(isActive);
+const router = useRouter();
+function redirect(){
+  router.push("/dashboard/banners")
+}
+   async function onSubmit(data) {
+    setLoading(true)
+    const endpoint="api/banners"
+    const resourceName="Banner"
+    const slug =generateSlug(data.title)
+    data.slug=slug
+ 
+    data.imageUrl=imageUrl;
+    {/*
+            id =>auto
+            title
+            slag=>auto
+            link
+            image
+            isActive
+            
+            */}
+      console.log(data);
+      if(id){
+        makePutRequest(
+            setLoading,
+            `api/banners/${id}`,
+            data,
+          "Banner",
+          redirect,
+            reset,redirect,
+            )
+      }else{
+        makePostRequest(
+            setLoading,
+            endpoint,
+            data,
+          resourceName,
+          redirect,
+            reset,
+            );
+            setImageUrl("")
+      }
+       
+    
+}
   return (
-    <div className="p-4 bg-gray-50 dark:bg-gray-900 min-h-screen">
-      {/* Header Section */}
-      <FormHeader
-        title="New Banner"
-        className="text-gray-900 dark:text-gray-100 text-2xl font-bold mb-8" // Adjusted margin-bottom for more space
-      />
-      <form
-        onSubmit={handleSubmit(onSubmit)} // Handle form submission
-        className="w-full max-w-5xl bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700 mx-auto my-3"
-      >
-        <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-          <TextInput
-            label="Banner Title"
-            name="title"
-            register={register}
-            errors={errors}
-            className="text-gray-900 dark:text-white"
-          />
-          <TextInput
-            label="Banner Link"
-            name="link"
-            type="url"
-            register={register}
-            errors={errors}
-            className="text-gray-900 dark:text-white"
-          />
-          <ImageInput
-            label="Banner Image"
-            imageUrl={imageUrl}
-            setImageUrl={setImageUrl}
-            endpoint="bannerImageUploader" // API endpoint for uploading banner images
-          />
-           <ToggleInput
-            label="Publish your Banner"
-            name="isActive"
-            trueTitle="Active"
-            falseTitle="Draft"
-            register={register}
-          />
-        </div>
-        <SubmitButton
-          isLoading={loading} // Bind to loading state
-          buttonTitle="Create Banner"
-          loadingButtonTittle="Creating Banner, please wait..."
-        />
-      </form>
+    <form 
+    onSubmit={handleSubmit(onSubmit)}
+    className="w-full max-w-4xl p-4 bg-white border
+    border-gray-200 rounded-lg shadow sm:p-6 md:p-8
+    dark:bg-gray-800 dark:border-gray-700 mx-auto my-3 mt-6">
+      <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+    <Textinputs label="Banner Title"
+         name="title"
+         register={register}
+         errors={errors}
+         />
+    <TextareaInput label="Banner link"
+              name="link"
+              type="url"
+              register={register}
+              errors={errors}
+                 
+                    
+                />
+            <ImageInput
+                    imageUrl={imageUrl}
+                    setImageUrl={setImageUrl}
+                    endpoint="BannerImageUploader"
+                    label="Banner Image"
+                />
+                
+          <ToggleInput 
+          label="Publish Your Banner"
+          name="isActive"
+          trueTitle="Active"
+          falseTitle="Draft"
+          isActive={isActive}
+          register={register}/>
     </div>
-  );
+    <SubmitButton
+                isLoading={loading}
+                buttonTitle={"Create Banner"}
+                loadingButtonTitle={"Creating Banner please wait..."}
+            />
+    </form>
+  )
 }

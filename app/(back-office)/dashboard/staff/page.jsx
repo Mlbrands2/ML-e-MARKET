@@ -4,7 +4,7 @@ import TableActions from '@/components/backstore/TableActions';
 import Link from 'next/link';
 import React from 'react';
 
-export default function staff() {
+export default function page() {
   return (
     <div>
       {/* Header */}

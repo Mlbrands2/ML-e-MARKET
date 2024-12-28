@@ -1,23 +1,33 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import FormHeader from "@/components/backstore/FormHeader";
 import TextInput from "@/components/Forminputs/Textinputs";
 import { makePostRequest } from "@/lib/apiRequest"; // Adjust the path as needed.
 import { useForm } from "react-hook-form";
 import SubmitButton from "@/components/Forminputs/SubmitButton";
 import TextareaInput from "@/components/Forminputs/TextareaInput";
+import { generateSlug } from "@/lib/generateSlug";
+import ImageInput from "@/components/Forminputs/imageinput";
+import SelectInput from "@/components/Forminputs/Selectinputs";
 import ToggleInput from "@/components/Forminputs/ToggleInput";
-import ImageInput from "@/components/Forminputs/imageinput"; // Component for image upload
-import RichTextInput from "@/components/Forminputs/RichTextInput"; // Corrected import for RichTextInput
+import RichTextInput from "@/components/Forminputs/RichTextInput"; // Import the RichTextInput component
 
 export default function NewStaff() {
+  const [imageUrl, setImageUrl] = useState("");
+  const markets = [
+    { id: 1, title: "dsm market" },
+    { id: 2, title: "arusha market" },
+    { id: 3, title: "iringa market" },
+    { id: 4, title: "mwanza market" },
+    { id: 5, title: "songea market" }
+  ];
+
   const [loading, setLoading] = useState(false); // Manage loading state
-  const [staffUniqueCode, setStaffUniqueCode] = useState(""); // Manage unique code state
 
   const {
     register,
-    watch,
     reset,
+    watch,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -26,48 +36,33 @@ export default function NewStaff() {
     },
   });
 
-  // Watch the staff's full name to generate the unique code
-  const staffFullName = watch("fullName");
   const isActive = watch("isActive");
-  const [notes, setNotes] = useState("<p>Enter notes here...</p>"); // State for RichTextInput
 
-  // Generate a unique code whenever the staff's full name changes
-  useEffect(() => {
-    if (staffFullName) {
-      const initials = staffFullName
-        .split(" ")
-        .map((word) => word.charAt(0).toUpperCase())
-        .join("");
-      const timestamp = Date.now();
-      setStaffUniqueCode(`ST-${initials}-${timestamp}`);
-    } else {
-      setStaffUniqueCode("");
-    }
-  }, [staffFullName]);
-
-  // Handle form submission
+  // Function to handle form submission
   async function onSubmit(data) {
     try {
       setLoading(true); // Set loading to true
-      const finalData = {
-        ...data,
-        staffUniqueCode, // Include the dynamically generated unique code
-        notes, // Include the notes from RichTextInput
-      };
-      console.log("Submitting Data:", finalData);
+      const slug = generateSlug(data.name); // Generate slug from staff name
+      data.slug = slug;
+      data.image = imageUrl; // Attach the image URL to form data
+      
+      console.log("Form Data:", data); // Debug form data
 
-      // API request
+      // Call makePostRequest
       await makePostRequest(
-        setLoading,
-        "api/staff", // API endpoint for staff
-        finalData,
-        "Staff Created",
-        reset
+        setLoading, // Function to manage loading state
+        "api/staff", // API endpoint
+        data, // Form data
+        "Staff", // Redirect path or purpose
+        reset // Function to reset the form
       );
+
+      // Reset imageUrl after successful request
+      setImageUrl("");
     } catch (error) {
       console.error("Error submitting staff:", error);
     } finally {
-      setLoading(false); // Ensure loading is set to false after submission
+      setLoading(false); // Ensure loading is set to false after completion
     }
   }
 
@@ -81,64 +76,45 @@ export default function NewStaff() {
       >
         <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
           <TextInput
-            label="Full Name"
-            name="fullName"
+            label="Staff Name"
+            name="name"
             register={register}
             errors={errors}
+            className="w-full"
           />
           <TextInput
-            label="Phone Number"
-            name="phone"
-            type="tel"
+            label="Position"
+            name="position"
             register={register}
             errors={errors}
+            className="w-full"
           />
-          <TextInput
-            label="Email Address"
-            name="email"
-            type="email"
+          <SelectInput
+            label="Select Market"
+            name="marketID"
             register={register}
             errors={errors}
+            className="w-full"
+            options={markets}
           />
-          <TextInput
-            label="Physical Address"
-            name="address"
-            register={register}
-            errors={errors}
-          />
+          {/* Using RichTextInput for Staff Description */}
           <RichTextInput
-            label="Notes"
-            name="notes"
-            value={notes}
-            setValue={setNotes}
+            label="Staff Description"
+            name="description"
+            register={register}
             errors={errors}
           />
           <ImageInput
-            label="Staff Image"
-            imageUrl={""} // Provide a default empty value for the image URL
-            setImageUrl={(url) => console.log("Uploaded image URL:", url)} // Handle the image URL
+            label="Staff Profile Image"
+            imageUrl={imageUrl}
+            setImageUrl={setImageUrl}
             endpoint="staffImageUploader"
           />
-          <TextInput
-            label="Password"
-            name="password"
-            type="password"
-            register={register}
-            errors={errors}
-          />
-          <TextInput
-            label="Unique Code"
-            name="staffUniqueCode"
-            register={() => ({})} // No validation, as it's auto-generated
-            errors={errors}
-            defaultValue={staffUniqueCode}
-            readOnly // Make it read-only since it's auto-generated
-          />
           <ToggleInput
-            label="Status"
+            label="Active Status"
             name="isActive"
             trueTitle="Active"
-            falseTitle="Draft"
+            falseTitle="Inactive"
             register={register}
           />
         </div>

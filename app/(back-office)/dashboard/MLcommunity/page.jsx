@@ -4,11 +4,11 @@ import TableActions from '@/components/backstore/TableActions';
 import Link from 'next/link';
 import React from 'react';
 
-export default function MLcommunity() {
+export default function page() {
   return (
     <div>
       {/* Header */}
-      <PageHeader heading="ML Community Trainings" href="/dashboard/MLcommunity/new" linkTitle="Add Training" />
+      <PageHeader heading="ML community" href="/dashboard/MLcommunity/new" linkTitle="Add Community training" />
 
       {/* Table Action Section */}
       <TableActions/>
